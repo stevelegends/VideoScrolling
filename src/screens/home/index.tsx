@@ -18,11 +18,7 @@ type Props = StaticScreenProps<{}>;
 export const HomeScreen: FC<Props> = () => {
   return (
     <SafeAreaView style={styles.flex1}>
-      <View
-        style={styles.flex1}
-        onLayout={layout => {
-          // console.log('calc:::', layout.nativeEvent.layout.height);
-        }}>
+      <View style={styles.flex1}>
         <ListData />
       </View>
     </SafeAreaView>

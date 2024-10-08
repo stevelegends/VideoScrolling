@@ -15,17 +15,17 @@ import {ViewToken} from 'react-native';
 import {FlashList} from '@shopify/flash-list';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {useSafeAreaFrame} from 'react-native-safe-area-context';
+import {useFocusEffect} from '@react-navigation/native';
+import {useHeaderHeight} from '@react-navigation/elements';
 
 // theme
 import {styles} from '../../theme';
 
 // components
 import {ListItem, useVideoView, VideoView} from './ListItem';
+import VideoPlayer from './VideoPlayer';
 
 import {srcAllPlatformList, srcAndroidList, media} from './mocks';
-import {useHeaderHeight} from '@react-navigation/elements';
-import VideoPlayer from './VideoPlayer';
-import {useFocusEffect} from '@react-navigation/native';
 
 const data = media.map((item, index) =>
   Object.assign({}, item, {uri: item.sources[0], id: index + 'x' + Date.now()}),
@@ -36,9 +36,9 @@ interface PostViewToken extends ViewToken {
 }
 
 type ListContextType = {
-  activeId: any;
+  activeId: {[id: string]: boolean};
   setActiveId: (value: any) => void;
-  videoCurrent: MutableRefObject<{currentTime: {[key: string]: any}}>;
+  activeVideo: MutableRefObject<{currentTime: {[key: string]: any}}>;
 };
 
 const ListContext = createContext<ListContextType | undefined>(undefined);
@@ -52,15 +52,13 @@ export function useList(): ListContextType {
 }
 
 const ListProvider = (props: {children: ReactNode}): ReactElement => {
-  const [activeId, setActiveId] = useState<any>({});
-  const videoCurrent = useRef({currentTime: {}});
-  const onSetActiveId = useCallback(newValue => {
-    setActiveId((prevValue: any) => Object.assign({}, {}, newValue));
-  }, []) as (newValue: any) => void;
+  const [activeId, setActiveId] = useState<{[id: string]: boolean}>({});
+  const activeVideo = useRef({currentTime: {}});
+
   return (
     <ListContext.Provider
       {...props}
-      value={{activeId, setActiveId: onSetActiveId, videoCurrent}}
+      value={{activeId, setActiveId, activeVideo}}
     />
   );
 };
@@ -72,7 +70,6 @@ const List = () => {
   const height = inset.height - useBottomTabBarHeight() - header;
 
   const list = useList();
-  // console.log(height);
 
   // const videoView = useVideoView();
 
@@ -100,12 +97,11 @@ const List = () => {
       if (!element) return;
       list.setActiveId({[element.item.id]: true});
 
+      /** DEPRECATED
       const cell = mediaRefs.current[element.item.id];
-
       if (cell) {
-        // console.log('element::', element);
-        // cell.playAt(element.item.id);
-      }
+        cell.playAt(element.item.id);
+      } */
     }
   });
 
@@ -113,6 +109,7 @@ const List = () => {
     itemVisiblePercentThreshold: 75,
     minimumViewTime: 300,
   });
+
   useFocusEffect(
     useCallback(() => {
       // return () => list.setActiveId({});
