@@ -6,15 +6,19 @@ import React, {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from 'react';
 
 // modules
-import {ViewToken} from 'react-native';
+import {Dimensions, StatusBar, ViewToken} from 'react-native';
 import {FlashList} from '@shopify/flash-list';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
-import {useSafeAreaFrame} from 'react-native-safe-area-context';
+import {
+  useSafeAreaFrame,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import {useFocusEffect} from '@react-navigation/native';
 import {useHeaderHeight} from '@react-navigation/elements';
 
@@ -25,10 +29,11 @@ import {styles} from '../../theme';
 import {ListItem, useVideoView, VideoView} from './ListItem';
 import VideoPlayer from './VideoPlayer';
 
-import {srcAllPlatformList, srcAndroidList, media} from './mocks';
+import {srcAllPlatformList, srcAndroidList, media, reals} from './mocks';
+import {videoServiceInstance} from '../../services';
 
-const data = media.map((item, index) =>
-  Object.assign({}, item, {uri: item.sources[0], id: index + 'x' + Date.now()}),
+const data = reals.map(item =>
+  Object.assign({}, item, {uri: item.url, id: item.video}),
 );
 
 interface PostViewToken extends ViewToken {
@@ -55,6 +60,30 @@ const ListProvider = (props: {children: ReactNode}): ReactElement => {
   const [activeId, setActiveId] = useState<{[id: string]: boolean}>({});
   const activeVideo = useRef({currentTime: {}});
 
+  useEffect(() => {
+    // videoServiceInstance.getPostTrending();
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      const updateActiveId = (isActive: boolean) => {
+        setActiveId(prev => {
+          const keys = Object.keys(prev);
+          if (keys.length > 0) {
+            return {[keys[0]]: isActive};
+          }
+          return prev;
+        });
+      };
+
+      updateActiveId(true); // Set active on focus
+
+      return () => {
+        updateActiveId(false); // Reset on blur
+      };
+    }, []),
+  );
+
   return (
     <ListContext.Provider
       {...props}
@@ -67,7 +96,9 @@ const List = () => {
   const mediaRefs = useRef<Record<string, any | null>>({});
   const inset = useSafeAreaFrame();
   const header = useHeaderHeight();
-  const height = inset.height - useBottomTabBarHeight() - header;
+  const safeAreaInsets = useSafeAreaInsets();
+  // const height = inset.height - useBottomTabBarHeight() - header;
+  const height = Dimensions.get('window').height - safeAreaInsets.top;
 
   const list = useList();
 
@@ -110,11 +141,6 @@ const List = () => {
     minimumViewTime: 300,
   });
 
-  useFocusEffect(
-    useCallback(() => {
-      // return () => list.setActiveId({});
-    }, []),
-  );
   return (
     <Fragment>
       {/* <VideoView ref={videoView.ref} /> */}

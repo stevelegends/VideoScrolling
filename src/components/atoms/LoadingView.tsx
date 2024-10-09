@@ -35,14 +35,19 @@ export const LoadingView = memo(
     useImperativeHandle(
       ref,
       () => ({
-        setIsLoading,
+        setIsLoading: (value: boolean) => {
+          if (isLoading !== value) {
+            setIsLoading(value);
+          }
+        },
       }),
-      [],
+      [isLoading],
     );
+
     const indicatorStyle = absoluteView ? StyleSheet.absoluteFill : style;
     if (!isLoading) return <Fragment />;
     return (
-      <ActivityIndicator color="#3235fd" size="large" style={indicatorStyle} />
+      <ActivityIndicator color="white" size={20} style={indicatorStyle} />
     );
   }),
 );

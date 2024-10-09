@@ -1,7 +1,7 @@
-import React, {FC} from 'react';
+import React, {FC, Fragment} from 'react';
 
 // modules
-import {View} from 'react-native';
+import {StatusBar, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 
 // type
@@ -17,10 +17,11 @@ type Props = StaticScreenProps<{}>;
 
 export const HomeScreen: FC<Props> = () => {
   return (
-    <SafeAreaView style={styles.flex1}>
+    <Fragment>
+      <StatusBar backgroundColor={'transparent'} translucent={true} />
       <View style={styles.flex1}>
         <ListData />
       </View>
-    </SafeAreaView>
+    </Fragment>
   );
 };

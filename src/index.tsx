@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 
 // modules
 import {createStaticNavigation} from '@react-navigation/native';
@@ -32,13 +32,21 @@ const Tabs = createBottomTabNavigator({
     tabBarActiveTintColor: 'tomato',
     tabBarInactiveTintColor: 'gray',
     tabBarStyle: {
-      height: 65,
+      height: 55,
+      backgroundColor: 'transparent',
+      borderTopWidth: 0,
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      bottom: 0,
+      elevation: 0,
     },
   }),
   screens: {
     Home: {
       screen: HomeScreen,
       options: {
+        headerShown: false,
         tabBarBadge: (<HomeBadge />) as any,
       },
     },

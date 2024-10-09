@@ -21,7 +21,8 @@ import Video, {
 
 // hooks
 import {useList} from './ListData';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, ViewStyle} from 'react-native';
+import {LoadingView, useLoadingView} from '../../components';
 
 interface VideoViewRef {
   setActiveId: (value: string) => void;
@@ -67,10 +68,11 @@ const VideoController = memo(
 
 export const VideoView = memo(
   forwardRef(({uri, id}: IVideoView, ref) => {
-    // const [activeId, setActiveId] = useState(null);
     const list = useList();
 
     const videoRef = useRef<VideoRef>(null);
+
+    const loadingView = useLoadingView();
 
     const onLoadCurrentTime = useCallback(() => {
       const currentTime = list.activeVideo.current.currentTime[id] || 0;
@@ -86,7 +88,7 @@ export const VideoView = memo(
     }, []);
 
     const onVideoBuffer = useCallback(params => {
-      // TODO implement
+      loadingView.onSetIsLoading(params.isBuffering);
     }, []) as (params: OnBufferData) => void;
 
     const onError = useCallback(
@@ -105,6 +107,11 @@ export const VideoView = memo(
       [id],
     );
 
+    const onActiveController = useCallback(active => {
+      active ? videoRef.current?.resume() : videoRef.current?.pause();
+      onLoadCurrentTime();
+    }, []) as (active: boolean) => void;
+
     useImperativeHandle(
       ref,
       () => ({
@@ -115,49 +122,53 @@ export const VideoView = memo(
       [],
     );
 
-    const onActiveController = useCallback(active => {
-      active ? videoRef.current?.resume() : videoRef.current?.pause();
-      onLoadCurrentTime();
-    }, []) as (active: boolean) => void;
-
     return (
       <VideoController id={id} onActive={onActiveController}>
-        <Video
-          ref={videoRef}
-          source={{uri, shouldCache: true}}
-          // adTagUrl={this.srcList[this.state.srcListId]?.adTagUrl}
-          // drm={this.srcList[this.state.srcListId]?.drm}
-          style={StyleSheet.absoluteFill}
-          // rate={this.state.rate}
-          // paused={this.state.paused}
-          paused={true}
-          // volume={this.state.volume}
-          // muted={this.state.muted}
-          // fullscreen={this.state.fullscreen}
-          // controls={this.state.showRNVControls}
-          // resizeMode={this.state.resizeMode}
-          resizeMode={ResizeMode.CONTAIN}
-          // onLoad={this.onLoad}
-          // onAudioTracks={this.onAudioTracks}
-          // onTextTracks={this.onTextTracks}
-          onProgress={onProgress}
-          // onEnd={this.onEnd}
-          progressUpdateInterval={1000}
-          onError={onError}
-          // onAudioBecomingNoisy={this.onAudioBecomingNoisy}
-          // onAudioFocusChanged={this.onAudioFocusChanged}
-          onLoadStart={onVideoLoadStart}
-          // onAspectRatio={this.onAspectRatio}
-          onReadyForDisplay={onReadyForDisplay}
-          onBuffer={onVideoBuffer}
-          // repeat={this.state.loop}
-          repeat={false}
-          // selectedTextTrack={this.state.selectedTextTrack}
-          // selectedAudioTrack={this.state.selectedAudioTrack}
-          playInBackground={false}
-        />
-        {/* <LoadingView absoluteView ref={loadingView.ref} /> */}
+        <Fragment>
+          <Video
+            ref={videoRef}
+            source={{uri, shouldCache: true}}
+            // adTagUrl={this.srcList[this.state.srcListId]?.adTagUrl}
+            // drm={this.srcList[this.state.srcListId]?.drm}
+            style={StyleSheet.absoluteFill}
+            // rate={this.state.rate}
+            // paused={this.state.paused}
+            paused={true}
+            // volume={this.state.volume}
+            // muted={this.state.muted}
+            // fullscreen={this.state.fullscreen}
+            // controls={this.state.showRNVControls}
+            // resizeMode={this.state.resizeMode}
+            resizeMode={ResizeMode.COVER}
+            // onLoad={this.onLoad}
+            // onAudioTracks={this.onAudioTracks}
+            // onTextTracks={this.onTextTracks}
+            onProgress={onProgress}
+            // onEnd={this.onEnd}
+            progressUpdateInterval={1000}
+            onError={onError}
+            // onAudioBecomingNoisy={this.onAudioBecomingNoisy}
+            // onAudioFocusChanged={this.onAudioFocusChanged}
+            onLoadStart={onVideoLoadStart}
+            // onAspectRatio={this.onAspectRatio}
+            onReadyForDisplay={onReadyForDisplay}
+            onBuffer={onVideoBuffer}
+            // repeat={this.state.loop}
+            repeat={true}
+            // selectedTextTrack={this.state.selectedTextTrack}
+            // selectedAudioTrack={this.state.selectedAudioTrack}
+            playInBackground={false}
+          />
+          <LoadingView style={$loadingStyle} ref={loadingView.ref} />
+        </Fragment>
       </VideoController>
     );
   }),
 );
+
+const $loadingStyle: ViewStyle = {
+  position: 'absolute',
+  bottom: 60,
+  left: 0,
+  right: 0,
+};

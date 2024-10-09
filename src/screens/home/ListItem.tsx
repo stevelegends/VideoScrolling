@@ -43,8 +43,8 @@ export const ListItem = forwardRef(
 
 const $container: ViewStyle = {
   width: '100%',
-  borderBottomWidth: 1,
-  borderBottomColor: 'white',
+  borderBottomWidth: 0.5,
+  borderBottomColor: 'rgba(0,0,0,0.3)',
 };
 
 const $title: TextStyle = {
