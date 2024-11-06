@@ -12,7 +12,7 @@ import React, {
 } from 'react';
 
 // modules
-import {Dimensions, StatusBar, ViewToken} from 'react-native';
+import {Dimensions, StatusBar, View, ViewStyle, ViewToken} from 'react-native';
 import {FlashList} from '@shopify/flash-list';
 import {useBottomTabBarHeight} from '@react-navigation/bottom-tabs';
 import {
@@ -30,7 +30,7 @@ import {ListItem, useVideoView, VideoView} from './ListItem';
 import VideoPlayer from './VideoPlayer';
 
 import {srcAllPlatformList, srcAndroidList, media, reals} from './mocks';
-import {videoServiceInstance} from '../../services';
+import {CaretDownButton, CaretUpButton} from '../../components';
 
 const data = reals.map(item =>
   Object.assign({}, item, {uri: item.url, id: item.video}),
@@ -94,6 +94,7 @@ const ListProvider = (props: {children: ReactNode}): ReactElement => {
 
 const List = () => {
   const mediaRefs = useRef<Record<string, any | null>>({});
+  const listRef = useRef<FlashList<any> | null>(null);
   const inset = useSafeAreaFrame();
   const header = useHeaderHeight();
   const safeAreaInsets = useSafeAreaInsets();
@@ -141,10 +142,36 @@ const List = () => {
     minimumViewTime: 300,
   });
 
+  const currentIndex = useRef(0);
+  const handleScroll = useCallback(
+    (direction: number) => {
+      const newIndex = currentIndex.current + direction;
+
+      // Check bounds
+      if (newIndex >= 0 && newIndex < data.length) {
+        currentIndex.current = newIndex;
+        listRef.current?.scrollToItem({
+          animated: true,
+          item: data[newIndex],
+          viewPosition: 0, // Adjust as needed
+        });
+      }
+    },
+    [data?.length],
+  );
+  const handleUpButtonOnPress = useCallback(() => {
+    handleScroll(-1);
+  }, []);
+
+  const handleDownButtonOnPress = useCallback(() => {
+    handleScroll(1);
+  }, []);
+
   return (
     <Fragment>
       {/* <VideoView ref={videoView.ref} /> */}
       <FlashList
+        ref={listRef}
         data={data}
         renderItem={renderItem}
         estimatedItemSize={height}
@@ -153,8 +180,19 @@ const List = () => {
         onViewableItemsChanged={onViewableItemsChanged.current}
         viewabilityConfig={viewabilityConfig.current}
       />
+      <View style={$controlView}>
+        <CaretUpButton onPress={handleUpButtonOnPress} />
+        <CaretDownButton onPress={handleDownButtonOnPress} />
+      </View>
     </Fragment>
   );
+};
+
+const $controlView: ViewStyle = {
+  position: 'absolute',
+  bottom: 100,
+  right: 10,
+  opacity: 0.5,
 };
 
 export const ListData = () => (

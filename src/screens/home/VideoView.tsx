@@ -7,7 +7,9 @@ import React, {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
+  useState,
 } from 'react';
 
 // modules
@@ -18,6 +20,7 @@ import Video, {
   ResizeMode,
   VideoRef,
 } from 'react-native-video';
+import convertToProxyURL from 'react-native-video-cache';
 
 // hooks
 import {useList} from './ListData';
@@ -122,12 +125,19 @@ export const VideoView = memo(
       [],
     );
 
+    const cachedUri = useMemo(() => {
+      const convertUri = convertToProxyURL(uri);
+      return convertUri;
+    }, [uri]);
+
+    console.log('CachedUri', cachedUri);
+
     return (
       <VideoController id={id} onActive={onActiveController}>
         <Fragment>
           <Video
             ref={videoRef}
-            source={{uri, shouldCache: true}}
+            source={{uri: cachedUri}}
             // adTagUrl={this.srcList[this.state.srcListId]?.adTagUrl}
             // drm={this.srcList[this.state.srcListId]?.drm}
             style={StyleSheet.absoluteFill}

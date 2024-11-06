@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 
 // modules
 import {createStaticNavigation} from '@react-navigation/native';
@@ -24,6 +24,7 @@ const getIcons = (focus: boolean, name: string) => {
 };
 
 const Tabs = createBottomTabNavigator({
+  initialRouteName: 'Profile',
   screenOptions: ({route}) => ({
     tabBarIcon: ({focused, color, size}) => {
       let iconName = getIcons(focused, route.name);
