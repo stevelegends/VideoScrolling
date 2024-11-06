@@ -38,26 +38,31 @@ apiInstance.axiosInstance.interceptors.response.use(
     if (isUnAuthorize && !isRetry) {
       /** Mark: the request as retried to avoid infinite loops. */
       originalRequest._retry = true;
-      return handleRefreshToken(originalRequest);
+      return handleRefreshToken(error);
     }
     /** For all other errors, return the error as is. */
     return Promise.reject(error);
   },
 );
 
-const handleRefreshToken = async (originalRequest: any) => {
+const handleRefreshToken = async (error: any) => {
   try {
     __DEV__ &&
       console.log('RefreshToken::', 'Retrieve the stored refresh token');
     const token = await refreshTokenStore.get();
     if (!token) {
-      throw Error('Can not get refresh token store');
+      __DEV__ && console.log('Can not get refresh token store');
+      throw error;
     }
     const newToken = await AuthService.postAuthRefresh(token.password);
     const accessToken = newToken?.accessToken;
     const refreshToken = newToken?.refreshToken;
     if (!accessToken || !refreshToken) {
-      throw Error('Can not get access and refresh token api from auth refresh');
+      __DEV__ &&
+        console.log(
+          'Can not get access and refresh token api from auth refresh',
+        );
+      throw error;
     }
 
     apiInstance.setHeader('Authorization', accessToken);
@@ -66,14 +71,14 @@ const handleRefreshToken = async (originalRequest: any) => {
 
     __DEV__ &&
       console.log('Instance: Retry the request with the new access token.');
-    return apiInstance.axiosInstance(originalRequest);
+    return apiInstance.axiosInstance(error.config);
   } catch (refreshError) {
     /**
      * Handle refresh token errors by clearing stored tokens,
      * and redirecting to the login-template page.
      * TODO redirect = '/login';
      */
-    console.error('Token refresh failed:', refreshError);
+    console.log('Token refresh failed:', refreshError);
     await refreshTokenStore.remove();
     await accessTokenStore.remove();
     return Promise.reject(refreshError);
