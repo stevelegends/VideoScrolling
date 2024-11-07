@@ -1,3 +1,5 @@
+import MockAdapter from 'axios-mock-adapter';
+
 import {apiInstance, baseURL} from './api.ts';
 import {refreshTokenStore} from './auth/credential.store.ts';
 import {AuthService} from './auth/auth.service.ts';
@@ -21,35 +23,54 @@ jest.mock('./auth/auth.service.ts', () => ({
   },
 }));
 
+const mock = new MockAdapter(apiInstance.axiosInstance);
+
 describe('API instance', () => {
   it('should create instance', () => {
     expect(apiInstance.getBaseURL()).toEqual(baseURL);
   });
 
   it('should request success', async () => {
+    mock.onGet('/test').reply(200);
     const res = await apiInstance.get('/test');
     expect(res.status).toEqual(200);
   });
 
   it('should request failure', async () => {
-    const res = await apiInstance.get('/user/me');
+    mock.onGet('/test1').reply(500);
+    const res = await apiInstance.get('/test1');
+    expect(res.status).toEqual(500);
   });
 
   it('should request failure without refresh token store', async () => {
     jest.spyOn(refreshTokenStore, 'get').mockResolvedValue(false);
-    const res = await apiInstance.get('/user/me');
+    mock.onGet('/test2').reply(401);
+    const res = await apiInstance.get('/test2');
+    expect(res.status).toEqual(401);
   });
 
-  it('should request failure without refresh token api', async () => {
+  it('should request failure with refresh token api', async () => {
     jest.spyOn(refreshTokenStore, 'get').mockResolvedValue({
       password: '1',
-    });
+    } as any);
 
     jest.spyOn(AuthService, 'postAuthRefresh').mockResolvedValue({
       refreshToken: '1',
       accessToken: '2',
     });
+    mock.onGet('/test3').reply(401);
+    const res = await apiInstance.get('test3');
+    expect(res.status).toEqual(401);
+  });
 
-    const res = await apiInstance.get('/user/me');
+  it('should request failure without refresh token api', async () => {
+    jest.spyOn(refreshTokenStore, 'get').mockResolvedValue({
+      password: '1',
+    } as any);
+
+    jest.spyOn(AuthService, 'postAuthRefresh').mockResolvedValue(null);
+    mock.onGet('/test3').reply(401);
+    const res = await apiInstance.get('test3');
+    expect(res.status).toEqual(401);
   });
 });

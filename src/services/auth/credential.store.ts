@@ -36,6 +36,7 @@ const Token = (token: TToken): IToken => {
   };
 };
 
+// Strategy
 const CredentialStrategy = (token: IToken) => {
   return Object.freeze({
     get: token.getCredential,
@@ -44,5 +45,6 @@ const CredentialStrategy = (token: IToken) => {
   });
 };
 
+// Execute context
 export const refreshTokenStore = CredentialStrategy(Token('refreshToken'));
 export const accessTokenStore = CredentialStrategy(Token('accessToken'));
