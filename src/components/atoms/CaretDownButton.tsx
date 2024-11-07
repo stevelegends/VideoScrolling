@@ -1,15 +1,15 @@
 import React from 'react';
-import {Pressable} from 'react-native';
+import {Pressable, PressableProps} from 'react-native';
 
 import Icon from 'react-native-vector-icons/AntDesign';
 
-interface IButton {
+interface IButton extends PressableProps {
   onPress: () => undefined;
   size?: number;
 }
-export const CaretDownButton = ({onPress, size = 30}: IButton) => {
+export const CaretDownButton = ({onPress, size = 30, ...props}: IButton) => {
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={onPress} {...props}>
       <Icon name="caretdown" size={size} color="#FFF" />
     </Pressable>
   );

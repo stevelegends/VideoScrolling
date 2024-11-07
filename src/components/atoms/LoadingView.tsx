@@ -45,9 +45,16 @@ export const LoadingView = memo(
     );
 
     const indicatorStyle = absoluteView ? StyleSheet.absoluteFill : style;
-    if (!isLoading) return <Fragment />;
+    if (!isLoading) {
+      return <Fragment />;
+    }
     return (
-      <ActivityIndicator color="white" size={20} style={indicatorStyle} />
+      <ActivityIndicator
+        testID="loading-indicator"
+        color="white"
+        size={20}
+        style={indicatorStyle}
+      />
     );
   }),
 );
