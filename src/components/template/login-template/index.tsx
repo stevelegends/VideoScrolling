@@ -27,6 +27,7 @@ export const LoginTemplate: FC<IProps> = memo(
         <View>
           <Text>Username</Text>
           <TextInput
+            testID="username"
             value={state.username}
             onChangeText={onSetUserName}
             style={$input}
@@ -35,6 +36,7 @@ export const LoginTemplate: FC<IProps> = memo(
         <View>
           <Text>Password</Text>
           <TextInput
+            testID="password"
             value={state.password}
             onChangeText={onSetPassword}
             style={$input}
