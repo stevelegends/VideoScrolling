@@ -1,12 +1,5 @@
 import {FC, memo, useCallback} from 'react';
-import {
-  Button,
-  Text,
-  TextInput,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native';
+import {Button, Text, TextInput, View} from 'react-native';
 
 import {useLoginTemplate} from './useLoginTemplate.ts';
 import type {TLogin} from '../../../services/auth/auth';
@@ -23,14 +16,14 @@ export const LoginTemplate: FC<IProps> = memo(
     }, [state]);
 
     return (
-      <View style={$container}>
+      <View className="gap-y-7 mx-7 mt-7">
         <View>
           <Text>Username</Text>
           <TextInput
             testID="username"
             value={state.username}
             onChangeText={onSetUserName}
-            style={$input}
+            className="border-b border-b-gray-200"
           />
         </View>
         <View>
@@ -39,7 +32,7 @@ export const LoginTemplate: FC<IProps> = memo(
             testID="password"
             value={state.password}
             onChangeText={onSetPassword}
-            style={$input}
+            className="border-b border-b-gray-200"
           />
         </View>
         <Button title="Login" onPress={handleOnSubmit} />
@@ -47,13 +40,3 @@ export const LoginTemplate: FC<IProps> = memo(
     );
   },
 );
-
-const $container: ViewStyle = {
-  rowGap: 30,
-  padding: 30,
-};
-
-const $input: TextStyle = {
-  borderBottomWidth: 0.5,
-  borderColor: 'grey',
-};
