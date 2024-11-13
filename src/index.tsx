@@ -15,21 +15,37 @@ import {HomeScreen, FeedScreen, ProfileScreen} from './screens';
 // components
 import {HomeBadge} from './components/tabs';
 
-const getIcons = (focus: boolean, name: string) => {
-  return {
-    Home: focus ? 'information-circle' : 'information-circle-outline',
-    Feed: focus ? 'list' : 'list-outline',
-    Profile: focus ? 'fish' : 'fish-outline',
-  }[name];
+enum Focused {
+  NO,
+  YES,
+}
+const TabIcon = {
+  [Focused.YES]: {
+    Home: 'information-circle',
+    Feed: 'list',
+    Profile: 'fish',
+  },
+  [Focused.NO]: {
+    Home: 'information-circle-outline',
+    Feed: 'list-outline',
+    Profile: 'fish-outline',
+  },
 };
+
+type TTab = {} & any;
 
 const Tabs = createBottomTabNavigator({
   initialRouteName: 'Profile',
   screenOptions: ({route}) => ({
-    tabBarIcon: ({focused, color, size}) => {
-      let iconName = getIcons(focused, route.name);
-      return <Ionicons name={iconName} size={size} color={color} />;
-    },
+    tabBarIcon: ({focused, color, size}) => (
+      <Ionicons
+        name={
+          (TabIcon[focused ? Focused.YES : Focused.NO] as TTab)?.[route.name]
+        }
+        size={size}
+        color={color}
+      />
+    ),
     tabBarActiveTintColor: 'tomato',
     tabBarInactiveTintColor: 'gray',
     tabBarStyle: {
