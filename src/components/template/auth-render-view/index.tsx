@@ -14,7 +14,7 @@ export const AuthRenderView: FC<Props> = ({Auth, UnAuth}) => {
   const {user, isSyncing} = useAuth();
   const isAuthorized = user !== null;
   if (isSyncing) {
-    return <Text>Syncing ...</Text>;
+    return <Text className="text-center mt-2">Syncing ...</Text>;
   }
   if (isAuthorized) {
     return <Auth />;

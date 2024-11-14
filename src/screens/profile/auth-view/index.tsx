@@ -7,6 +7,7 @@ import {useProfile} from '../context/profile-context.tsx';
 
 // components
 import {SyncButton} from './SyncButton';
+import {AvatarView} from '../../../components';
 
 export const AuthView = memo(() => {
   const {user, onSyncUser} = useAuth();
@@ -21,8 +22,9 @@ export const AuthView = memo(() => {
   }, []);
 
   return (
-    <View>
+    <View className="flex-1 items-center">
       <Text>{JSON.stringify(user)}</Text>
+      <AvatarView />
       <Button title="Logout" onPress={handleLogoutOnPress} />
       <SyncButton onPress={handleSyncOnPress} />
     </View>
