@@ -1,12 +1,15 @@
 import {FC, memo, useCallback} from 'react';
+
 import {Button, Text, TextInput, View} from 'react-native';
 
 import {useLoginTemplate} from './useLoginTemplate.ts';
+
 import type {TLogin} from '../../../services/auth/auth';
 
 interface IProps {
   onSubmit: (login: TLogin) => void;
 }
+
 export const LoginTemplate: FC<IProps> = memo(
   ({onSubmit = () => undefined}) => {
     const {state, onSetPassword, onSetUserName} = useLoginTemplate();

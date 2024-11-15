@@ -1,20 +1,18 @@
 import {memo, useCallback} from 'react';
 
-// modules
+import {Image, TouchableWithoutFeedback, View} from 'react-native';
 import Animated, {
-  measure,
   MeasuredDimensions,
+  measure,
   runOnJS,
   runOnUI,
   useAnimatedRef,
 } from 'react-native-reanimated';
-import {Image, TouchableWithoutFeedback} from 'react-native';
 
-// components
-import {useLightboxControls} from '../lightbox/useLightbox.tsx';
+import {LikeButton} from '../../molecules';
 
-// hooks
 import {useAuth} from '../../../context';
+import {useLightboxControls} from '../lightbox/useLightbox.tsx';
 
 export const AvatarView = memo(() => {
   const {user} = useAuth();
@@ -58,20 +56,30 @@ export const AvatarView = memo(() => {
   }, [avatar, _openLightbox, aviRef]);
 
   return (
-    <TouchableWithoutFeedback
-      testID="avataButton"
-      onPress={onPressAvi}
-      accessibilityRole="image"
-      accessibilityLabel="Avatar"
-      accessibilityHint="">
-      <Animated.View ref={aviRef} collapsable={false}>
-        <Image
-          style={{width: 100, height: 100}}
-          source={{
-            uri: user?.image,
-          }}
-        />
-      </Animated.View>
-    </TouchableWithoutFeedback>
+    <View>
+      <TouchableWithoutFeedback
+        testID="avataButton"
+        onPress={onPressAvi}
+        accessibilityRole="image"
+        accessibilityLabel="Avatar"
+        accessibilityHint="">
+        <Animated.View ref={aviRef} collapsable={false}>
+          <Image
+            style={{
+              borderColor: 'gray',
+              backgroundColor: 'white',
+              width: 128,
+              height: 128,
+              borderRadius: 128,
+            }}
+            resizeMode="cover"
+            source={{
+              uri: user?.image,
+            }}
+          />
+        </Animated.View>
+      </TouchableWithoutFeedback>
+      <LikeButton />
+    </View>
   );
 });

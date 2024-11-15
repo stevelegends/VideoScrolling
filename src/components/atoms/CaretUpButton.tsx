@@ -1,6 +1,6 @@
 import React from 'react';
-import {Pressable} from 'react-native';
 
+import {Pressable} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 
 interface IButton {

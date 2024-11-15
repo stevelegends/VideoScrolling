@@ -1,4 +1,5 @@
 import {render, screen, userEvent} from '@testing-library/react-native';
+
 import {CaretDownButton} from './CaretDownButton';
 
 jest.mock('react-native-vector-icons/AntDesign', () => 'Icon');

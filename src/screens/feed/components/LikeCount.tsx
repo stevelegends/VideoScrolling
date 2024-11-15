@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   StyleSheet,
   Text,
@@ -6,6 +7,7 @@ import {
   View,
   ViewProps,
 } from 'react-native';
+
 import {thumbsUp} from '../utils';
 
 interface Props extends ViewProps {}

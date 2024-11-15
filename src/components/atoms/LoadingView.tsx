@@ -1,12 +1,13 @@
 import React, {
-  forwardRef,
   Fragment,
+  forwardRef,
   memo,
   useCallback,
   useImperativeHandle,
   useRef,
   useState,
 } from 'react';
+
 import {ActivityIndicator, StyleSheet, ViewStyle} from 'react-native';
 
 interface LoadingViewRef {

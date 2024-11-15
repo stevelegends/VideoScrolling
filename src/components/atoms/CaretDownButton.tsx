@@ -1,6 +1,6 @@
 import React from 'react';
-import {Pressable, PressableProps} from 'react-native';
 
+import {Pressable, PressableProps} from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 
 interface IButton extends PressableProps {

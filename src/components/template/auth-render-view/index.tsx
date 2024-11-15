@@ -2,7 +2,6 @@ import {FC, JSX} from 'react';
 
 import {Text} from 'react-native';
 
-// context
 import {useAuth} from '../../../context';
 
 interface Props {

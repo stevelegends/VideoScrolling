@@ -1,5 +1,7 @@
 import React from 'react';
-import {render, act, screen, renderHook} from '@testing-library/react-native';
+
+import {act, render, renderHook, screen} from '@testing-library/react-native';
+
 import {LoadingView, useLoadingView} from './LoadingView';
 
 test('LoadingView shows and hides the ActivityIndicator', () => {

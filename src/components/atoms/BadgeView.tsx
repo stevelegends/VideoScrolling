@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {View, Text, ViewStyle, TextStyle} from 'react-native';
+import {Text, TextStyle, View, ViewStyle} from 'react-native';
 
 interface IBadgeView {
   count?: number;

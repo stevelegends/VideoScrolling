@@ -4,4 +4,16 @@ module.exports = {
   bracketSpacing: false,
   singleQuote: true,
   trailingComma: 'all',
+  importOrder: [
+    '^(.*)styles$',
+    '^react$',
+    '<THIRD_PARTY_MODULES>',
+    '^components/(.*)$',
+    '^(.*)./molecules(.*)$',
+    '^hooks/(.*)$',
+    '^./use(.*)$',
+    '^[./]',
+  ],
+  importOrderSeparation: true,
+  importOrderSortSpecifiers: true,
 };
